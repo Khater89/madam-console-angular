@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Basic Tailwind reset handled by @import "tailwindcss" */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
