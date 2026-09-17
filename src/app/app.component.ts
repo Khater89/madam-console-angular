@@ -1,6 +1,7 @@
 import { Component, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { StoreService } from './store.service';
 import { OrderComponent } from './components/order.component';
 import { QueueComponent } from './components/queue.component';
@@ -15,6 +16,7 @@ import { SetupComponent } from './components/setup.component';
   imports: [
     CommonModule, 
     MatIconModule,
+    MatProgressBarModule,
     OrderComponent, 
     QueueComponent, 
     ReviewComponent, 
@@ -23,7 +25,10 @@ import { SetupComponent } from './components/setup.component';
     SetupComponent
   ],
   template: `
-    <div class="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900 transition-colors duration-300">
+    <div class="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900 transition-colors duration-300 relative">
+      @if (store.loading()) {
+        <mat-progress-bar mode="indeterminate" class="absolute top-0 left-0 right-0 z-50"></mat-progress-bar>
+      }
       
       <!-- Sidebar Navigation (Drawer) -->
       <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shrink-0 shadow-sm z-10 transition-colors duration-300">

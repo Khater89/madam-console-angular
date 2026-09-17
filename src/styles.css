@@ -1,6 +1,8 @@
+@import "@angular/material/prebuilt-themes/azure-blue.css";
 @import "tailwindcss";
 
 /* Basic Tailwind reset handled by @import "tailwindcss" */
 body {
   font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
 }
