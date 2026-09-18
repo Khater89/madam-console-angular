@@ -1,0 +1,8 @@
+{
+  "name": "Madama Group Console",
+  "description": "Marketing orders and campaign publishing management console with AI assistant",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

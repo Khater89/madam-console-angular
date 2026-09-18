@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 3000",
-    "dev": "ng serve --host 0.0.0.0 --port 3000",
+    "start": "node dist/applet/server/server.mjs",
+    "dev": "node dev-runner.mjs",
     "build": "ng build",
+    "lint": "tsc --noEmit",
     "watch": "ng build --watch --configuration development"
   },
   "private": true,
@@ -19,8 +20,13 @@
     "@angular/material": "^18.2.14",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/platform-server": "^18.2.14",
     "@angular/router": "^18.2.0",
+    "@angular/ssr": "^18.2.21",
+    "@google/genai": "^2.23.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "express": "^5.2.1",
+    "firebase": "^12.19.0",
     "postcss": "^8.5.28",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.3.3",
@@ -31,6 +37,9 @@
     "@angular-devkit/build-angular": "^18.2.21",
     "@angular/cli": "^18.2.21",
     "@angular/compiler-cli": "^18.2.0",
+    "@firebase/eslint-plugin-security-rules": "^0.0.2",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.3",
     "typescript": "~5.5.2"
   }
 }

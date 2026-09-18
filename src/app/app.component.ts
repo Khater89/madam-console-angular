@@ -9,6 +9,7 @@ import { ReviewComponent } from './components/review.component';
 import { PublishComponent } from './components/publish.component';
 import { DoneComponent } from './components/done.component';
 import { SetupComponent } from './components/setup.component';
+import { ChatComponent } from './chat.component';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ import { SetupComponent } from './components/setup.component';
     ReviewComponent, 
     PublishComponent, 
     DoneComponent, 
-    SetupComponent
+    SetupComponent,
+    ChatComponent
   ],
   template: `
     <div class="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900 transition-colors duration-300 relative">
@@ -41,7 +43,6 @@ import { SetupComponent } from './components/setup.component';
         
         <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
           <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-4 px-4">Marketing</div>
-
           <button (click)="setView('order')"
                   class="w-full flex items-center gap-3 px-4 py-3 rounded-full transition-all font-medium text-sm text-left"
                   [class.bg-indigo-50]="view === 'order'" [class.text-indigo-700]="view === 'order'"
@@ -108,6 +109,19 @@ import { SetupComponent } from './components/setup.component';
           {{ store.toastMsg() }}
         </div>
       </main>
+      
+      <!-- Chatbot Widget -->
+      <div class="fixed bottom-8 right-8 z-50 flex flex-col items-end">
+        @if (isChatOpen) {
+          <div class="mb-4 w-96 max-w-[calc(100vw-2rem)] shadow-2xl rounded-2xl animate-fade-in">
+            <app-chat></app-chat>
+          </div>
+        }
+        <button (click)="isChatOpen = !isChatOpen" 
+                class="w-14 h-14 bg-indigo-600 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-indigo-700 transition-colors focus:outline-none">
+          <mat-icon>{{ isChatOpen ? 'close' : 'chat' }}</mat-icon>
+        </button>
+      </div>
     </div>
   `,
   styles: [`
@@ -117,6 +131,7 @@ import { SetupComponent } from './components/setup.component';
 })
 export class AppComponent implements OnInit {
   view = 'order';
+  isChatOpen = false;
 
   constructor(public store: StoreService) {}
 

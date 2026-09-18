@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} { allow read, write: if false; }
+    
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidBrand(data) {
+      return data.keys().hasAll(['name', 'active', 'ownerId', 'createdAt']) &&
+        data.size() == 4 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.active is bool &&
+        data.ownerId == request.auth.uid &&
+        data.createdAt is timestamp;
+    }
+
+    match /brands/{brandId} {
+      allow get: if isSignedIn() && isValidId(brandId) && resource.data.ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(brandId) && isValidBrand(incoming()) && incoming().createdAt == request.time;
+      allow update: if isSignedIn() && isValidId(brandId) &&
+                    isValidBrand(incoming()) &&
+                    incoming().ownerId == existing().ownerId &&
+                    incoming().createdAt == existing().createdAt &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['name', 'active']);
+      allow delete: if isSignedIn() && isValidId(brandId) && resource.data.ownerId == request.auth.uid;
+    }
+
+    function isValidBrandContentOption(data) {
+      return data.keys().hasAll(['brandId', 'content_type', 'active', 'ownerId', 'createdAt']) &&
+        data.size() == 5 &&
+        data.brandId is string && data.brandId.size() <= 128 &&
+        data.content_type is string && data.content_type.size() <= 50 &&
+        data.active is bool &&
+        data.ownerId == request.auth.uid &&
+        data.createdAt is timestamp;
+    }
+
+    match /brand_content_options/{optionId} {
+      allow get: if isSignedIn() && isValidId(optionId) && resource.data.ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(optionId) && isValidBrandContentOption(incoming()) && incoming().createdAt == request.time;
+      allow update: if isSignedIn() && isValidId(optionId) &&
+                    isValidBrandContentOption(incoming()) &&
+                    incoming().ownerId == existing().ownerId &&
+                    incoming().createdAt == existing().createdAt &&
+                    incoming().brandId == existing().brandId &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['content_type', 'active']);
+      allow delete: if isSignedIn() && isValidId(optionId) && resource.data.ownerId == request.auth.uid;
+    }
+
+    function isValidContentQueueItem(data) {
+      return data.keys().hasAll(['status', 'target_platform', 'ownerId', 'createdAt', 'updatedAt']) &&
+        data.size() >= 5 && data.size() <= 12 &&
+        data.status is string && data.status.size() <= 50 &&
+        data.target_platform is string && data.target_platform.size() <= 50 &&
+        data.ownerId == request.auth.uid &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp &&
+        (!data.keys().hasAny(['media_type']) || (data.media_type is string && data.media_type.size() <= 50)) &&
+        (!data.keys().hasAny(['generated_facebook']) || (data.generated_facebook is string && data.generated_facebook.size() <= 10000)) &&
+        (!data.keys().hasAny(['generated_instagram']) || (data.generated_instagram is string && data.generated_instagram.size() <= 10000)) &&
+        (!data.keys().hasAny(['generated_linkedin']) || (data.generated_linkedin is string && data.generated_linkedin.size() <= 10000)) &&
+        (!data.keys().hasAny(['image_url']) || (data.image_url is string && data.image_url.size() <= 1000)) &&
+        (!data.keys().hasAny(['video_status']) || (data.video_status is string && data.video_status.size() <= 50)) &&
+        (!data.keys().hasAny(['video_url']) || (data.video_url is string && data.video_url.size() <= 1000));
+    }
+
+    match /content_queue/{queueId} {
+      allow get: if isSignedIn() && isValidId(queueId) && resource.data.ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(queueId) && isValidContentQueueItem(incoming()) && incoming().createdAt == request.time && incoming().updatedAt == request.time;
+      allow update: if isSignedIn() && isValidId(queueId) &&
+                    isValidContentQueueItem(incoming()) &&
+                    incoming().ownerId == existing().ownerId &&
+                    incoming().createdAt == existing().createdAt &&
+                    incoming().updatedAt == request.time &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['status', 'target_platform', 'media_type', 'generated_facebook', 'generated_instagram', 'generated_linkedin', 'image_url', 'video_status', 'video_url', 'updatedAt']);
+      allow delete: if isSignedIn() && isValidId(queueId) && resource.data.ownerId == request.auth.uid;
+    }
+  }
+}

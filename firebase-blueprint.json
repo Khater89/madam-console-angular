@@ -1,0 +1,124 @@
+{
+  "entities": {
+    "Brand": {
+      "title": "Brand",
+      "description": "A brand object",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["name", "active", "ownerId", "createdAt"]
+    },
+    "BrandContentOption": {
+      "title": "BrandContentOption",
+      "description": "Content options for brands",
+      "type": "object",
+      "properties": {
+        "brandId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "content_type": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["brandId", "content_type", "active", "ownerId", "createdAt"]
+    },
+    "ContentQueueItem": {
+      "title": "ContentQueueItem",
+      "description": "Queue of content generation tasks",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "target_platform": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "media_type": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "generated_facebook": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "generated_instagram": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "generated_linkedin": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "image_url": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "video_status": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "video_url": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["status", "target_platform", "ownerId", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/brands/{brandId}": {
+      "schema": { "$ref": "#/entities/Brand" },
+      "description": "Brand entries"
+    },
+    "/brand_content_options/{optionId}": {
+      "schema": { "$ref": "#/entities/BrandContentOption" },
+      "description": "Content options for brands"
+    },
+    "/content_queue/{queueId}": {
+      "schema": { "$ref": "#/entities/ContentQueueItem" },
+      "description": "Content queue items"
+    }
+  }
+}
